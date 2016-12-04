@@ -1,7 +1,7 @@
 # AGILE Toolkit
 # by DM Cook
 # begun 2016.07.24
-# version 0.2
+# version 0.3 - 12.3.2016
 
 #  TODO
 # - addTo doesn't get values added to it from the timeframe evaluator
@@ -9,11 +9,10 @@
 # - make sure that we handle "Go Back" being issued as first command
 # - make sure we have method for printing any specific list at any time in the process.
 # - make sure lowercase works as well as uppercase for specifying list names.
-
+# - error correction when typing name of a list (otherwise it doesn't work right)
+# - create an error printer and request errors from the error printer
 
 # NICE TO HAVE
-# - systemwide indicator of current list and current active item
-# - systemwide monitor for a help key.
 
 def initializer():
     print("hello!")
@@ -22,75 +21,67 @@ def initializer():
 
 # set some vars
 
-weeklyTasks = []
-monthlyTasks = []
-quarterlyTasks = []
-global addTo
+weeklyTasks = ['no items']
+monthlyTasks = ['no items']
+quarterlyTasks = ['no items']
+
 addTo = "xxx"
-global addedItem
+theItem = ""
+global theItem
+
 import string
+
+print('addTo in globals, ' 'addTo' in globals())
 
 
 #  ---- functions -------
+def reviewMode():
+    print("welcome to Review Mode.")
+    # more to come
 
-def getResponse(text):  # follows up with a request for timeframe
-    if "add" in text:
+
+def getTimeframe(text: object) -> object:  # follows up with a request for timeframe
+    if "add" in text:  # where does it look for text var? - unanswered question
         timeframe = input("Where does this entry go? \n Weekly, Monthly or Quarterly?: ")
         evaluateInput(timeframe)  # sends the timeframe to evaluateInput
-    #need additional options to handle other modes (review, etc.)
-    if "review" in text:
-        reviewMode()
-    if "go back" in text:
-        print("Going back to the beginning now.")
-        initInput=input("what should I do?")
 
-# adds an item to a list
-def addAnItem(list):
-    global addedItem
-    addedItem = input('what is the item?')
-    # figure out which list gets appended to
-    if list == weeklyTasks:
-        weeklyTasks.insert(0, addedItem)
+#
+#
+#
+# print("Do you want to go back?")
+#    else:
+#        reviewMode()
 
-    if list == monthlyTasks:
-        monthlyTasks.insert(0,addedItem)
 
-    if list == quarterlyTasks:
-        quarterlyTasks.insert(0,addedItem)
 
 
 # takes an item and checks its timeframe
 def evaluateInput(timeframe):
     global addTo
+    global theItem;
     if timeframe == "Weekly":
         addTo = "weeklyTasks"
-        addAnItem(weeklyTasks)
-        printDestination()
-        print(weeklyTasks)
+        printDestination();
+        weeklyTasks.insert(0, theItem)
 
     if timeframe == "Monthly":
         addTo = "monthlyTasks"
-        addAnItem(monthlyTasks)
+        monthlyTasks.insert(0, theItem)
         printDestination()
-        print(monthlyTasks)
-
     if timeframe == "Quarterly":
         addTo = "quarterlyTasks"
-        addAnItem(quarterlyTasks)
+        quarterlyTasks.insert(0, theItem)
         printDestination()
-        print(quarterlyTasks)
-    else:
-        print('sorry, didn\'t get that. try again?')
-        global addedItem
-        addAnItem(addTo)
+    # check for mistakes to list name
+    if (timeframe != "Monthly") or (timeframe != "Weekly") or (timeframe != "Quarterly"):
+        print("Sorry, I didn't get that. Please try again.")
+        timeframe = input("Which list did you want? (Weekly, Monthly or Quarterly?)")
+        evaluateInput(timeframe)
+       #  doesn't work:
+        # getTimeframe(text)
 
-
-    # this doesn't work right - error catch happens but then process exits
-
-
-        # next, ask for the item
-    # def askForItem():
-    #     theItem = input('what is the item?')
+    # next, ask for the item
+    theItem = input('what is the item?')
 
     # how to call a list by a variable name?
     # so far, tried
@@ -100,6 +91,7 @@ def evaluateInput(timeframe):
     # def askForItem(theItem):
     #     addTo.push(theItem)
     #     print(addTo)
+    #
 
 
 #############################
@@ -108,41 +100,19 @@ def evaluateInput(timeframe):
 
 def printDirections():
     print(
-        "Type 'go back' to go back to main menu. \n Type "
-        "'review' to enter Review mode. "
-        "\n Type 'add' to add a new item.")
+        "Type 'go back' to go back to main menu. \n Type 'review' to enter Review mode. \n Type 'add' to add a new item.")
 
-
-
-
-
-# def getActiveList(activeList):
-#     activeList =
-
-def goBack():
-    printDirections()
-    initInput = input("What next? ")
-    getResponse(initInput)  # passes everything over for eval
 
 def printDestination():
+    print("The item (" + theItem + ") will be added to " + addTo)
     # prints where something is going
-    global addedItem
-    global addTo
-    print("The item %s will be added to %s" % (addedItem, addTo))
-    print("the %s list now contains:" % (addTo))
-    goBack()
+    print("the " + addTo + " list now contains:")  # good, this worked
+    print(weeklyTasks)  # good, this worked (but the method to push doesn't work)
+    # end print destination
 
 
-def reviewMode():
-    # Review phase needs to be set up
-    print("welcome to Review Mode.")
-    print("here is what is on the weekly list: \n"
-          "%s " % (weeklyTasks))
-    print("here is what is on the monthly list: \n"
-          "%s" % (monthlyTasks))
-    print("here is what is on the quarterly list: \n"
-          "%s" % (quarterlyTasks))
-    # more to come
+# Review phase needs to be set up
+
 
 # ===============
 #    showtime
@@ -152,4 +122,5 @@ def reviewMode():
 initializer()
 printDirections()
 initInput = input("What next? ")
-getResponse(initInput)  # passes everything over for eval
+getTimeframe(initInput)  # passes everything over for eval
+printDestination()
