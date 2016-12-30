@@ -11,6 +11,8 @@
 # - make sure lowercase works as well as uppercase for specifying list names.
 # - error correction when typing name of a list (otherwise it doesn't work right)
 # - create an error printer and request errors from the error printer
+# - save array/load arrays
+# - ensure array isn't lost when overwriting
 
 # NICE TO HAVE
 
@@ -35,33 +37,58 @@ print('addTo in globals, ' 'addTo' in globals())
 
 
 #  ---- functions -------
-def reviewMode():
-    print("welcome to Review Mode.")
-    # more to come
-
 
 def getTimeframe(text: object) -> object:  # follows up with a request for timeframe
-    if "add" in text:  # where does it look for text var? - unanswered question
-        timeframe = input("Where does this entry go? \n Weekly, Monthly or Quarterly?: ")
-        evaluateInput(timeframe)  # sends the timeframe to evaluateInput
+"""
 
-#
-#
-#
-# print("Do you want to go back?")
-#    else:
-#        reviewMode()
+:rtype: object #what does this do?
+"""
+if "add" in text:  # where does it look for text var? - unanswered question
+    timeframe = input("Where does this entry go? \n Weekly, Monthly or Quarterly?: ")
+    evaluateInput(timeframe)  # sends the timeframe to evaluateInput
+
+def addNewItem(): #restarts the Add loop
+    initInput = input("What next? ")
+    getTimeframe(initInput)
 
 
+# ==== modes ====
 
+def reviewMode():
+    print("welcome to Review Mode.")
+    print("pick a list: weekly, monthly, or quarterly?")
+
+    def getReviewMode(request: object) -> object:
+    if "weekly" in request:
+        print("weekly list contains:")
+        print(weeklyTasks)
+    if "monthly" in request:
+        print("monthly list contains:")
+        print(monthlyTasks)
+    if "quarterly" in request:
+        print("quarterly list contains:")
+        print(quarterlyTasks)
+        # need error handler for typos
+
+    print("Here are your Lists:")
+    print ("weekly list contains:")
+    print(weeklyTasks)
+    print ("monthly list contains:")
+    print(monthlyTasks)
+    print ("quarterly list contains:")
+    print(quarterlyTasks)
+
+    # more to come
+
+# ================
 
 # takes an item and checks its timeframe
 def evaluateInput(timeframe):
     global addTo
-    global theItem;
+    global theItem
     if timeframe == "Weekly":
         addTo = "weeklyTasks"
-        printDestination();
+        printDestination()
         weeklyTasks.insert(0, theItem)
 
     if timeframe == "Monthly":
@@ -75,10 +102,8 @@ def evaluateInput(timeframe):
     # check for mistakes to list name
     if (timeframe != "Monthly") or (timeframe != "Weekly") or (timeframe != "Quarterly"):
         print("Sorry, I didn't get that. Please try again.")
-        timeframe = input("Which list did you want? (Weekly, Monthly or Quarterly?)")
-        evaluateInput(timeframe)
-       #  doesn't work:
-        # getTimeframe(text)
+        addNewItem()
+
 
     # next, ask for the item
     theItem = input('what is the item?')
@@ -99,8 +124,9 @@ def evaluateInput(timeframe):
 #############################
 
 def printDirections():
-    print(
-        "Type 'go back' to go back to main menu. \n Type 'review' to enter Review mode. \n Type 'add' to add a new item.")
+    print("Type 'go back' to go back to main menu. "
+          "\n Type 'review' to enter Review mode. "
+          "\n Type 'add' to add a new item.")
 
 
 def printDestination():
@@ -108,7 +134,7 @@ def printDestination():
     # prints where something is going
     print("the " + addTo + " list now contains:")  # good, this worked
     print(weeklyTasks)  # good, this worked (but the method to push doesn't work)
-    # end print destination
+    # end printDestination
 
 
 # Review phase needs to be set up
