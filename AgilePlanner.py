@@ -1,18 +1,18 @@
 # AGILE Toolkit
 # by DM Cook
 # begun 2016.07.24
-# version 0.3 - 12.3.2016
+# version 0.4 - 12.30.2016
 
 #  TODO
-# - addTo doesn't get values added to it from the timeframe evaluator
-# - need to store list items in an array
 # - make sure that we handle "Go Back" being issued as first command
-# - make sure we have method for printing any specific list at any time in the process.
-# - make sure lowercase works as well as uppercase for specifying list names.
-# - error correction when typing name of a list (otherwise it doesn't work right)
+# - make sure we have method for printing any specific list at any time in
+#       the process.
+# - ensure that "no items" entry is removed.
+# - error correction when typing name of a list  (one method is below but needs
+#       to cover both lowercase & upper; also injects at wrong time)
 # - create an error printer and request errors from the error printer
-# - save array/load arrays
-# - ensure array isn't lost when overwriting
+# - save array/load arrays to a json file
+# - ensure array content isn't lost when overwriting
 
 # NICE TO HAVE
 
@@ -23,9 +23,9 @@ def initializer():
 
 # set some vars
 
-weeklyTasks = ['no items']
-monthlyTasks = ['no items']
-quarterlyTasks = ['no items']
+weeklyTasks = []
+monthlyTasks = []
+quarterlyTasks = []
 
 addTo = "xxx"
 theItem = ""
@@ -39,13 +39,12 @@ print('addTo in globals, ' 'addTo' in globals())
 #  ---- functions -------
 
 def getTimeframe(text: object) -> object:  # follows up with a request for timeframe
-"""
 
-:rtype: object #what does this do?
-"""
-if "add" in text:  # where does it look for text var? - unanswered question
-    timeframe = input("Where does this entry go? \n Weekly, Monthly or Quarterly?: ")
-    evaluateInput(timeframe)  # sends the timeframe to evaluateInput
+  #  :rtype: object #what does this do?
+
+    if "add" in text:  # where does it look for text var? - unanswered question
+        timeframe = input("Where does this entry go? \n Weekly, Monthly or Quarterly?: ")
+        evaluateInput(timeframe)  # sends the timeframe to evaluateInput
 
 def addNewItem(): #restarts the Add loop
     initInput = input("What next? ")
@@ -59,24 +58,24 @@ def reviewMode():
     print("pick a list: weekly, monthly, or quarterly?")
 
     def getReviewMode(request: object) -> object:
-    if "weekly" in request:
-        print("weekly list contains:")
-        print(weeklyTasks)
-    if "monthly" in request:
-        print("monthly list contains:")
-        print(monthlyTasks)
-    if "quarterly" in request:
-        print("quarterly list contains:")
-        print(quarterlyTasks)
-        # need error handler for typos
+        if "weekly" in request or "Weekly" in request:
+            print("weekly list contains:")
+            print(weeklyTasks)
+        if "monthly" in request or "Monthly" in request:
+            print("monthly list contains:")
+            print(monthlyTasks)
+        if "quarterly" in request or "Quarterly" in request:
+            print("quarterly list contains:")
+            print(quarterlyTasks)
+            # need error handler for typos
 
-    print("Here are your Lists:")
-    print ("weekly list contains:")
-    print(weeklyTasks)
-    print ("monthly list contains:")
-    print(monthlyTasks)
-    print ("quarterly list contains:")
-    print(quarterlyTasks)
+        print("Here are your Lists:")
+        print ("weekly list contains:")
+        print(weeklyTasks)
+        print ("monthly list contains:")
+        print(monthlyTasks)
+        print ("quarterly list contains:")
+        print(quarterlyTasks)
 
     # more to come
 
@@ -86,27 +85,25 @@ def reviewMode():
 def evaluateInput(timeframe):
     global addTo
     global theItem
-    if timeframe == "Weekly":
+    if timeframe == "Weekly" or timeframe == "weekly":
         addTo = "weeklyTasks"
-        printDestination()
+        # next, ask for the item
+        theItem = input('what is the item?')
         weeklyTasks.insert(0, theItem)
-
-    if timeframe == "Monthly":
+        printDestination()
+        print(weeklyTasks)
+    if timeframe == "Monthly" or timeframe == "monthly":
         addTo = "monthlyTasks"
+        theItem = input('what is the item?')
         monthlyTasks.insert(0, theItem)
         printDestination()
-    if timeframe == "Quarterly":
+        print(monthlyTasks)
+    if timeframe == "Quarterly" or timeframe == "quarterly":
         addTo = "quarterlyTasks"
+        theItem = input('what is the item?')
         quarterlyTasks.insert(0, theItem)
         printDestination()
-    # check for mistakes to list name
-    if (timeframe != "Monthly") or (timeframe != "Weekly") or (timeframe != "Quarterly"):
-        print("Sorry, I didn't get that. Please try again.")
-        addNewItem()
-
-
-    # next, ask for the item
-    theItem = input('what is the item?')
+        print(quarterlyTasks)
 
     # how to call a list by a variable name?
     # so far, tried
@@ -118,6 +115,11 @@ def evaluateInput(timeframe):
     #     print(addTo)
     #
 
+    # check for mistakes to list name - need to refactor this
+    # this was originally under evaluateInput - might need to stay there for flow control
+    # if (timeframe != "Monthly") or (timeframe != "Weekly") or (timeframe != "Quarterly"):
+    #     print("Sorry, I didn't get that. Please try again.")
+    #     addNewItem()
 
 #############################
 
@@ -133,7 +135,7 @@ def printDestination():
     print("The item (" + theItem + ") will be added to " + addTo)
     # prints where something is going
     print("the " + addTo + " list now contains:")  # good, this worked
-    print(weeklyTasks)  # good, this worked (but the method to push doesn't work)
+    # print(weeklyTasks)  # good, this worked (but the method to push doesn't work)
     # end printDestination
 
 
