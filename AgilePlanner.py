@@ -14,7 +14,9 @@
 # - save array/load arrays to a json file
 # - ensure array content isn't lost when overwriting
 
-# NICE TO HAVE
+# NICE TO HAVE features
+# - web app component would be ideal.
+# - weather brought in from Dark Sky is fun.
 
 def initializer():
     print("hello!")
@@ -31,12 +33,20 @@ addTo = "xxx"
 theItem = ""
 global theItem
 
+# ----- imports -------
 import string
+import json
+import random
+# ---------------------
+
 
 print('addTo in globals, ' 'addTo' in globals())
 
 
 #  ---- functions -------
+def askInput():
+    initInput = input("What next? ")
+    getTimeframe(initInput)  # passes everything over for eval
 
 def getTimeframe(text: object) -> object:  # follows up with a request for timeframe
 
@@ -45,11 +55,6 @@ def getTimeframe(text: object) -> object:  # follows up with a request for timef
     if "add" in text:  # where does it look for text var? - unanswered question
         timeframe = input("Where does this entry go? \n Weekly, Monthly or Quarterly?: ")
         evaluateInput(timeframe)  # sends the timeframe to evaluateInput
-
-def addNewItem(): #restarts the Add loop
-    initInput = input("What next? ")
-    getTimeframe(initInput)
-
 
 # ==== modes ====
 
@@ -92,18 +97,22 @@ def evaluateInput(timeframe):
         weeklyTasks.insert(0, theItem)
         printDestination()
         print(weeklyTasks)
+        askInput()
     if timeframe == "Monthly" or timeframe == "monthly":
         addTo = "monthlyTasks"
         theItem = input('what is the item?')
         monthlyTasks.insert(0, theItem)
         printDestination()
         print(monthlyTasks)
+        askInput()
+# here's where I was
     if timeframe == "Quarterly" or timeframe == "quarterly":
         addTo = "quarterlyTasks"
         theItem = input('what is the item?')
         quarterlyTasks.insert(0, theItem)
         printDestination()
         print(quarterlyTasks)
+        askInput()
 
     # how to call a list by a variable name?
     # so far, tried
@@ -119,7 +128,7 @@ def evaluateInput(timeframe):
     # this was originally under evaluateInput - might need to stay there for flow control
     # if (timeframe != "Monthly") or (timeframe != "Weekly") or (timeframe != "Quarterly"):
     #     print("Sorry, I didn't get that. Please try again.")
-    #     addNewItem()
+    #     askInput()
 
 #############################
 
@@ -133,13 +142,10 @@ def printDirections():
 
 def printDestination():
     print("The item (" + theItem + ") will be added to " + addTo)
-    # prints where something is going
     print("the " + addTo + " list now contains:")  # good, this worked
-    # print(weeklyTasks)  # good, this worked (but the method to push doesn't work)
+    # print(addTo)  # good, this worked (but the method to push doesn't work)
     # end printDestination
 
-
-# Review phase needs to be set up
 
 
 # ===============
@@ -149,6 +155,6 @@ def printDestination():
 
 initializer()
 printDirections()
-initInput = input("What next? ")
-getTimeframe(initInput)  # passes everything over for eval
+# modularize the below
+askInput()
 printDestination()
