@@ -7,6 +7,7 @@
 # - make sure that we handle "Go Back" being issued as first command
 # - make sure we have method for printing any specific list at any time in
 #       the process.
+# - error handler for Review Mode.
 # - ensure that "no items" entry is removed.
 # - error correction when typing name of a list  (one method is below but needs
 #       to cover both lowercase & upper; also injects at wrong time)
@@ -55,6 +56,8 @@ def getTimeframe(text: object) -> object:  # follows up with a request for timef
     if "add" in text:  # where does it look for text var? - unanswered question
         timeframe = input("Where does this entry go? \n Weekly, Monthly or Quarterly?: ")
         evaluateInput(timeframe)  # sends the timeframe to evaluateInput
+    if "review" in text:
+        reviewMode()
 
 # ==== modes ====
 
@@ -81,13 +84,11 @@ def reviewMode():
         print(monthlyTasks)
         print ("quarterly list contains:")
         print(quarterlyTasks)
+        getReviewMode(input("pick a List: weekly, monthly, or quarterly."))
 
-    # more to come
 
-# ================
-
-# takes an item and checks its timeframe
 def evaluateInput(timeframe):
+    # takes an item and checks its timeframe
     global addTo
     global theItem
     if timeframe == "Weekly" or timeframe == "weekly":
@@ -97,55 +98,43 @@ def evaluateInput(timeframe):
         weeklyTasks.insert(0, theItem)
         printDestination()
         print(weeklyTasks)
+        printDirections()
         askInput()
+
     if timeframe == "Monthly" or timeframe == "monthly":
         addTo = "monthlyTasks"
         theItem = input('what is the item?')
         monthlyTasks.insert(0, theItem)
         printDestination()
         print(monthlyTasks)
+        printDirections()
         askInput()
-# here's where I was
+
     if timeframe == "Quarterly" or timeframe == "quarterly":
         addTo = "quarterlyTasks"
         theItem = input('what is the item?')
         quarterlyTasks.insert(0, theItem)
         printDestination()
         print(quarterlyTasks)
+        printDirections()
         askInput()
 
-    # how to call a list by a variable name?
-    # so far, tried
-    # addTo.insert(0, theItem)
-    # weeklytasks.append(theItem)
-    # print(addTo)
-    # def askForItem(theItem):
-    #     addTo.push(theItem)
-    #     print(addTo)
-    #
 
-    # check for mistakes to list name - need to refactor this
+
+    # check for mistakes to list name - need to adjust this
     # this was originally under evaluateInput - might need to stay there for flow control
     # if (timeframe != "Monthly") or (timeframe != "Weekly") or (timeframe != "Quarterly"):
     #     print("Sorry, I didn't get that. Please try again.")
     #     askInput()
-
-#############################
-
-#############################
 
 def printDirections():
     print("Type 'go back' to go back to main menu. "
           "\n Type 'review' to enter Review mode. "
           "\n Type 'add' to add a new item.")
 
-
 def printDestination():
     print("The item (" + theItem + ") will be added to " + addTo)
     print("the " + addTo + " list now contains:")  # good, this worked
-    # print(addTo)  # good, this worked (but the method to push doesn't work)
-    # end printDestination
-
 
 
 # ===============
@@ -155,6 +144,4 @@ def printDestination():
 
 initializer()
 printDirections()
-# modularize the below
 askInput()
-printDestination()
