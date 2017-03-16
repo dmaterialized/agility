@@ -14,7 +14,6 @@
 # - create an error printer and request errors from the error printer
 # - save array/load arrays to a json file
 # - ensure array content isn't lost when overwriting
-# - review mode isn't connected up properly yet.
 
 # NICE TO HAVE features
 # - web app component would be ideal.
@@ -39,8 +38,10 @@ global theItem
 import string
 import json
 import random
-import numpy
-import pandas
+# ---------------------
+
+
+# print('addTo in globals, ' 'addTo' in globals())
 
 
 #  ---- functions -------
@@ -49,6 +50,7 @@ def askInput():
     getTimeframe(initInput)  # passes everything over for eval
 
 def getTimeframe(text: object) -> object:  # follows up with a request for timeframe
+
   #  :rtype: object #what does this do?
 
     if "add" in text:  # where does it look for text var? - unanswered question
@@ -60,7 +62,8 @@ def getTimeframe(text: object) -> object:  # follows up with a request for timef
 # ==== modes ====
 
 def reviewMode():
-    print("welcome to Review Mode.\nPick a list: weekly, monthly, or quarterly?")
+    print("welcome to Review Mode.")
+    print("pick a list: weekly, monthly, or quarterly?")
 
     def getReviewMode(request: object) -> object:
         if "weekly" in request or "Weekly" in request:
@@ -74,19 +77,16 @@ def reviewMode():
             print(quarterlyTasks)
             # need error handler for typos
 
-        printList()
-        getReviewMode(input("pick a List: weekly, monthly, or quarterly."))
-
-
-def printList():
-    print("Here are your Lists:")
+        print("Here are your Lists:")
         print ("weekly list contains:")
         print(weeklyTasks)
         print ("monthly list contains:")
         print(monthlyTasks)
         print ("quarterly list contains:")
         print(quarterlyTasks)
-        
+        getReviewMode(input("pick a List: weekly, monthly, or quarterly."))
+
+
 def evaluateInput(timeframe):
     # takes an item and checks its timeframe
     global addTo
@@ -95,7 +95,6 @@ def evaluateInput(timeframe):
         addTo = "weeklyTasks"
         # next, ask for the item
         theItem = input('what is the item?')
-        # TODO: add an error handler for if the item has text at all.
         weeklyTasks.insert(0, theItem)
         printDestination()
         print(weeklyTasks)
@@ -120,11 +119,13 @@ def evaluateInput(timeframe):
         printDirections()
         askInput()
 
+
+
     # check for mistakes to list name - need to adjust this
     # this was originally under evaluateInput - might need to stay there for flow control
-     if (timeframe != "Monthly") or (timeframe != "Weekly") or (timeframe != "Quarterly"):
-         print("Sorry, I didn't get that. Please try again.")
-         askInput()
+    # if (timeframe != "Monthly") or (timeframe != "Weekly") or (timeframe != "Quarterly"):
+    #     print("Sorry, I didn't get that. Please try again.")
+    #     askInput()
 
 def printDirections():
     print("Type 'go back' to go back to main menu. "
