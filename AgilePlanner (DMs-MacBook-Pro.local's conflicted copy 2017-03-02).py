@@ -77,16 +77,20 @@ def reviewMode():
             print(quarterlyTasks)
             # need error handler for typos
 
-        print("Here are your Lists:")
-        print ("weekly list contains:")
-        print(weeklyTasks)
-        print ("monthly list contains:")
-        print(monthlyTasks)
-        print ("quarterly list contains:")
-        print(quarterlyTasks)
+        printLists()
         getReviewMode(input("pick a List: weekly, monthly, or quarterly."))
 
+def printLists():
+    print("Here are your Lists:")
+    print ("weekly list contains:")
+    print(weeklyTasks)
+    print ("monthly list contains:")
+    print(monthlyTasks)
+    print ("quarterly list contains:")
+    print(quarterlyTasks)
 
+
+       
 def evaluateInput(timeframe):
     # takes an item and checks its timeframe
     global addTo
