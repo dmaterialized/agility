@@ -32,7 +32,6 @@ monthlyTasks = []
 quarterlyTasks = []
 
 addTo = "xxx"
-theItem = ""
 global theItem
 
 # ----- imports -------
@@ -80,12 +79,12 @@ def reviewMode():
 
 def printList():
     print("Here are your Lists:")
-        print ("weekly list contains:")
-        print(weeklyTasks)
-        print ("monthly list contains:")
-        print(monthlyTasks)
-        print ("quarterly list contains:")
-        print(quarterlyTasks)
+    print ("weekly list contains:")
+    print(weeklyTasks)
+    print ("monthly list contains:")
+    print(monthlyTasks)
+    print ("quarterly list contains:")
+    print(quarterlyTasks)
         
 def evaluateInput(timeframe):
     # takes an item and checks its timeframe
@@ -122,14 +121,15 @@ def evaluateInput(timeframe):
 
     # check for mistakes to list name - need to adjust this
     # this was originally under evaluateInput - might need to stay there for flow control
-     if (timeframe != "Monthly") or (timeframe != "Weekly") or (timeframe != "Quarterly"):
-         print("Sorry, I didn't get that. Please try again.")
-         askInput()
+    if (timeframe != "Monthly") or (timeframe != "Weekly") or (timeframe != "Quarterly"):
+        print("Sorry, I didn't get that. Please try again.")
+        askInput()
 
 def printDirections():
     print("Type 'go back' to go back to main menu. "
-          "\n Type 'review' to enter Review mode. "
-          "\n Type 'add' to add a new item.")
+        "\n Type 'review' to enter Review mode. "
+        "\n Type 'add' to add a new item.")
+
 
 def printDestination():
     print("The item (" + theItem + ") will be added to " + addTo)
