@@ -4,7 +4,7 @@
 # version 0.4 - 12.30.2016
 
 #  TODO
-# - make sure that we handle "Go Back" being issued as first command
+# - make sure that we handle "Go Back" being issued as a command
 # - make sure we have method for printing any specific list at any time in
 #       the process.
 # - error handler for Review Mode.
@@ -38,6 +38,7 @@ global theItem
 import string
 import json
 import random
+import time
 import numpy
 import pandas
 
@@ -49,13 +50,16 @@ def askInput():
 
 def getTimeframe(text: object) -> object:  # follows up with a request for timeframe
   #  :rtype: object #what does this do?
-
     if "add" in text:  # where does it look for text var? - unanswered question
         timeframe = input("Where does this entry go? \n Weekly, Monthly or Quarterly?: ")
         evaluateInput(timeframe)  # sends the timeframe to evaluateInput
     if "review" in text:
         reviewMode()
 
+def sleeper(sleeps: object) -> object:
+    # cuts out at 5 seconds
+    while (sleeps>0) and (sleeps<5):
+        time.sleep(sleeps)
 
 def printList():
     print("Here are your Lists:")
@@ -75,7 +79,9 @@ def evaluateInput(timeframe):
         # next, ask for the item
         theItem = input('what is the item?')
         # TODO: add an error handler for if the item has text at all.
+        # TODO: add an improved error handler for if we don't recognize the item.
         weeklyTasks.insert(0, theItem)
+        #can't we clean up the below a little?
         printDestination()
         print(weeklyTasks)
         printDirections()
@@ -119,7 +125,11 @@ def printDestination():
 
 # ======== modes ===========
 def reviewMode():
-    print("welcome to Review Mode.\nPick a list: weekly, monthly, or quarterly?")
+    print("welcome to Review Mode.")
+    printList()
+    reviewSelect = input("pick a List: weekly, monthly, or quarterly.")
+    getReviewMode(reviewSelect)
+
     def getReviewMode(request: object) -> object:
         if "weekly" in request or "Weekly" in request:
             print("weekly list contains:")
@@ -130,10 +140,10 @@ def reviewMode():
         if "quarterly" in request or "Quarterly" in request:
             print("quarterly list contains:")
             print(quarterlyTasks)
+        return selection
+
             # need error handler for typos
-        printList()
-        reviewSelect = input("pick a List: weekly, monthly, or quarterly.")
-        getReviewMode(reviewSelect)
+
 
 
 
