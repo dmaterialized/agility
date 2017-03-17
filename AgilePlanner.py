@@ -56,34 +56,14 @@ def getTimeframe(text: object) -> object:  # follows up with a request for timef
     if "review" in text:
         reviewMode()
 
-# ==== modes ====
-
-def reviewMode():
-    print("welcome to Review Mode.\nPick a list: weekly, monthly, or quarterly?")
-
-    def getReviewMode(request: object) -> object:
-        if "weekly" in request or "Weekly" in request:
-            print("weekly list contains:")
-            print(weeklyTasks)
-        if "monthly" in request or "Monthly" in request:
-            print("monthly list contains:")
-            print(monthlyTasks)
-        if "quarterly" in request or "Quarterly" in request:
-            print("quarterly list contains:")
-            print(quarterlyTasks)
-            # need error handler for typos
-
-        printList()
-        getReviewMode(input("pick a List: weekly, monthly, or quarterly."))
-
 
 def printList():
     print("Here are your Lists:")
-    print ("weekly list contains:")
+    print("weekly list contains:")
     print(weeklyTasks)
-    print ("monthly list contains:")
+    print("monthly list contains:")
     print(monthlyTasks)
-    print ("quarterly list contains:")
+    print("quarterly list contains:")
     print(quarterlyTasks)
         
 def evaluateInput(timeframe):
@@ -125,6 +105,7 @@ def evaluateInput(timeframe):
         print("Sorry, I didn't get that. Please try again.")
         askInput()
 
+# --------------- printers -------------------
 def printDirections():
     print("Type 'go back' to go back to main menu. "
         "\n Type 'review' to enter Review mode. "
@@ -134,6 +115,26 @@ def printDirections():
 def printDestination():
     print("The item (" + theItem + ") will be added to " + addTo)
     print("the " + addTo + " list now contains:")  # good, this worked
+# ---------------------------------------------
+
+# ======== modes ===========
+def reviewMode():
+    print("welcome to Review Mode.\nPick a list: weekly, monthly, or quarterly?")
+    def getReviewMode(request: object) -> object:
+        if "weekly" in request or "Weekly" in request:
+            print("weekly list contains:")
+            print(weeklyTasks)
+        if "monthly" in request or "Monthly" in request:
+            print("monthly list contains:")
+            print(monthlyTasks)
+        if "quarterly" in request or "Quarterly" in request:
+            print("quarterly list contains:")
+            print(quarterlyTasks)
+            # need error handler for typos
+        printList()
+        reviewSelect = input("pick a List: weekly, monthly, or quarterly.")
+        getReviewMode(reviewSelect)
+
 
 
 # ===============
