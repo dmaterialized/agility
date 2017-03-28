@@ -15,6 +15,10 @@
 # - save array/load arrays to a json file
 # - ensure array content isn't lost when overwriting
 # - review mode isn't connected up properly yet.
+# check for any mistakes to list name - need to adjust this
+# add an error handler for if the item has text at all.
+# add an improved error handler for if we don't recognize the item.
+
 
 # NICE TO HAVE features
 # - web app component would be ideal.
@@ -61,7 +65,14 @@ def sleeper(sleeps: object) -> object:
     while (sleeps>0) and (sleeps<5):
         time.sleep(sleeps)
 
+def askForItem():
+    input="What is the item?"
+    return input
+
 def printList():
+    """
+   :rtype: object
+    """
     print("Here are your Lists:")
     print("weekly list contains:")
     print(weeklyTasks)
@@ -77,9 +88,9 @@ def evaluateInput(timeframe):
     if timeframe == "Weekly" or timeframe == "weekly":
         addTo = "weeklyTasks"
         # next, ask for the item
+        # modularize the below steps
         theItem = input('what is the item?')
-        # TODO: add an error handler for if the item has text at all.
-        # TODO: add an improved error handler for if we don't recognize the item.
+
         weeklyTasks.insert(0, theItem)
         #can't we clean up the below a little?
         printDestination()
@@ -107,6 +118,7 @@ def evaluateInput(timeframe):
 
     # check for mistakes to list name - need to adjust this
     # this was originally under evaluateInput - might need to stay there for flow control
+# ---------- error handler -------------- #
     if (timeframe != "Monthly") or (timeframe != "Weekly") or (timeframe != "Quarterly"):
         print("Sorry, I didn't get that. Please try again.")
         askInput()
@@ -114,8 +126,8 @@ def evaluateInput(timeframe):
 # --------------- printers -------------------
 def printDirections():
     print("Type 'go back' to go back to main menu. "
-        "\n Type 'review' to enter Review mode. "
-        "\n Type 'add' to add a new item.")
+          "\n Type 'review' to enter Review mode. "
+          "\n Type 'add' to add a new item.")
 
 
 def printDestination():
@@ -130,19 +142,21 @@ def reviewMode():
     reviewSelect = input("pick a List: weekly, monthly, or quarterly.")
     getReviewMode(reviewSelect)
 
-    def getReviewMode(request: object) -> object:
-        if "weekly" in request or "Weekly" in request:
-            print("weekly list contains:")
-            print(weeklyTasks)
-        if "monthly" in request or "Monthly" in request:
-            print("monthly list contains:")
-            print(monthlyTasks)
-        if "quarterly" in request or "Quarterly" in request:
-            print("quarterly list contains:")
-            print(quarterlyTasks)
-        return selection
+def getReviewMode(request: object) -> object:
+    if "weekly" in reviewSelect or "Weekly" in reviewSelect:
+        print("weekly list contains:")
+        for item in weeklyTasks:
+            print(item)
+    if "monthly" in reviewSelect or "Monthly" in reviewSelect:
+        print("monthly list contains:")
+        for item in monthlyTasks:
+            print(item)
+    if "quarterly" in reviewSelect or "Quarterly" in request:
+        print("quarterly list contains:")
+        for item in quarterlyTasks:
+            print(item)
 
-            # need error handler for typos
+        # need error handler for typos
 
 
 
