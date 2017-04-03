@@ -1,7 +1,9 @@
 # AGILE Toolkit
 # by DM Cook
 # begun 2016.07.24
-# version 0.4 - 12.30.2016
+# (with no idea what to do next)
+# current build: version 0.5 - 3/20/2017
+# previous: version 0.4 - 12.30.2016
 
 #  TODO
 # - make sure that we handle "Go Back" being issued as a command
@@ -42,7 +44,7 @@ global theItem
 import string
 import json
 import random
-import time
+import datetime
 import numpy
 import pandas
 
