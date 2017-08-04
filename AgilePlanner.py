@@ -20,13 +20,12 @@
 # add an error handler for if the item has text at all.
 # add an improved error handler for if we don't recognize the item.
 
-
 # NICE TO HAVE features
 # - web app component would be ideal.
 # - a visualization would be killer
 
 # ----- imports -------
-import datetime
+import time,datetime
 import numpy
 import sqlite3
 import pandas
@@ -86,7 +85,8 @@ def askInput():
     initInput = input("What next? ")
     getTimeframe(initInput)  # passes everything over for eval
 
-def getTimeframe(text: object) -> object:  # follows up with a request for timeframe
+def getTimeframe(text):  # follows up with a request for timeframe
+# object) -> object: what does this do?
   #  :rtype: object #what does this do?
     if "add" in text:  # where does it look for text var? - unanswered question
         timeframe = input("Where does this entry go? \n Weekly, Monthly or Quarterly?: ")
@@ -94,7 +94,8 @@ def getTimeframe(text: object) -> object:  # follows up with a request for timef
     if "review" in text:
         reviewMode()
 
-def sleeper(sleeps: object) -> object:
+def sleeper(sleeps):
+# def sleeper(sleeps: object) -> object:
     # cuts out at 5 seconds
     while (sleeps>0) and (sleeps<5):
         time.sleep(sleeps)
@@ -162,11 +163,6 @@ def evaluateInput(timeframe):
     # this was originally under evaluateInput - might need to stay there for flow control
 
 
-
-
-
-
-
 # =========================================
 # ---------- error handler -------------- #
 # =========================================
@@ -175,8 +171,6 @@ def evaluateInput(timeframe):
         askInput()
     elif timeframe != "Monthly" or timeframe != "Weekly" or timeframe != "Quarterly":
         print("Sorry, I didn't get that. Please try again.")
-
-
 
 
 
