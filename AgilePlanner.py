@@ -1,7 +1,6 @@
 # AGILE Toolkit
 # by DM Cook
 # begun 2016.07.24
-# (with no idea what to do next)
 # current build: version 0.5 - 3/20/2017
 # previous: version 0.4 - 12.30.2016
 
@@ -26,6 +25,41 @@
 # - web app component would be ideal.
 # - a visualization would be killer
 
+# ----- imports -------
+import datetime, numpy, pandas, json, string, sqlite3
+
+
+# create a database first (using OOP)
+
+class Database:
+    # create blueprint of the object,
+    # then create instances
+
+    def __init__(self,agile): # this is a constructor;
+    # init is first call
+        self.conn=sqlite3.connect(agile)
+        self.cur=self.conn.cursor()
+        self.cur.execute("CREATE TABLE IF NOT EXISTS agility (id INTEGER PRIMARY KEY, taskname text, timeframe text)") #TODO: date added would be useful for filtering.
+        self.conn.commit()
+
+    def insert(self, taskname, timeframe):
+        self.cur.execute("INSERT INTO agility VALUES (NULL, ?,?)",(taskname,timeframe))
+        self.conn.commit()
+
+    def view(self,timeframe):
+        #TODO: add filter by timeframe
+        self.cur.execute("SELECT * from agility")
+        rows=self.cur.fetchall()
+        self.conn.commit()
+        return rows
+        #TODO: add delete, update, search
+
+    def __del__(self):
+        self.conn.close()
+
+    print("Back end initialized.")#check in when loaded
+
+
 def initializer():
     print("hello!")
     print("do you want to view the current list, or add a new item?")
@@ -40,13 +74,6 @@ quarterlyTasks = []
 addTo = "xxx"
 global theItem
 
-# ----- imports -------
-import string
-import json
-import random
-import datetime
-import numpy
-import pandas
 
 
 #  ---- functions -------
@@ -82,7 +109,7 @@ def printList():
     print(monthlyTasks)
     print("quarterly list contains:")
     print(quarterlyTasks)
-        
+
 def evaluateInput(timeframe):
     # takes an item and checks its timeframe
     global addTo
