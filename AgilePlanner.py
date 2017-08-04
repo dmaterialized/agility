@@ -26,18 +26,22 @@
 # - a visualization would be killer
 
 # ----- imports -------
-import datetime, numpy, pandas, json, string, sqlite3
+import datetime
+import numpy
+import sqlite3
+import pandas
+import json
+import string
 
 
 # create a database first (using OOP)
-
 class Database:
     # create blueprint of the object,
     # then create instances
 
-    def __init__(self,agile): # this is a constructor;
+    def __init__(self,db): # this is a constructor;
     # init is first call
-        self.conn=sqlite3.connect(agile)
+        self.conn=sqlite3.connect(db)
         self.cur=self.conn.cursor()
         self.cur.execute("CREATE TABLE IF NOT EXISTS agility (id INTEGER PRIMARY KEY, taskname text, timeframe text)") #TODO: date added would be useful for filtering.
         self.conn.commit()
@@ -57,7 +61,8 @@ class Database:
     def __del__(self):
         self.conn.close()
 
-    print("Back end initialized.")#check in when loaded
+
+    print("Back end initialized.") #check in when loaded
 
 
 def initializer():
@@ -98,6 +103,9 @@ def askForItem():
     input="What is the item?"
     return input
 
+
+
+
 def printList():
     """
    :rtype: object
@@ -109,6 +117,11 @@ def printList():
     print(monthlyTasks)
     print("quarterly list contains:")
     print(quarterlyTasks)
+
+
+
+
+
 
 def evaluateInput(timeframe):
     # takes an item and checks its timeframe
@@ -147,10 +160,29 @@ def evaluateInput(timeframe):
 
     # check for mistakes to list name - need to adjust this
     # this was originally under evaluateInput - might need to stay there for flow control
+
+
+
+
+
+
+
+# =========================================
 # ---------- error handler -------------- #
-    if (timeframe != "Monthly") or (timeframe != "Weekly") or (timeframe != "Quarterly"):
-        print("Sorry, I didn't get that. Please try again.")
+# =========================================
+    if timeframe == "Monthly" or timeframe == "Weekly" or timeframe == "Quarterly":
+        print("End of review.")
         askInput()
+    elif timeframe != "Monthly" or timeframe != "Weekly" or timeframe != "Quarterly":
+        print("Sorry, I didn't get that. Please try again.")
+
+
+
+
+
+
+
+
 
 # --------------- printers -------------------
 def printDirections():
@@ -164,6 +196,18 @@ def printDestination():
     print("the " + addTo + " list now contains:")  # good, this worked
 # ---------------------------------------------
 
+
+
+
+
+
+
+
+
+
+
+
+
 # ======== modes ===========
 def reviewMode():
     print("welcome to Review Mode.")
@@ -171,7 +215,8 @@ def reviewMode():
     reviewSelect = input("pick a List: weekly, monthly, or quarterly.")
     getReviewMode(reviewSelect)
 
-def getReviewMode(request: object) -> object:
+def getReviewMode(reviewSelect):
+# I do not know what request: object) -> object: does
     if "weekly" in reviewSelect or "Weekly" in reviewSelect:
         print("weekly list contains:")
         for item in weeklyTasks:
@@ -180,7 +225,7 @@ def getReviewMode(request: object) -> object:
         print("monthly list contains:")
         for item in monthlyTasks:
             print(item)
-    if "quarterly" in reviewSelect or "Quarterly" in request:
+    if "quarterly" in reviewSelect or "Quarterly" in reviewSelect:
         print("quarterly list contains:")
         for item in quarterlyTasks:
             print(item)
