@@ -1,232 +1,181 @@
+
+# this is the correct file for AgilePlanner.
+
+
 # AGILE Toolkit
 # by DM Cook
 # begun 2016.07.24
-# current build: version 0.5 - 3/20/2017
-# previous: version 0.4 - 12.30.2016
+# version 0.3
+# m: 2017.08.17
 
 #  TODO
-# - make sure that we handle "Go Back" being issued as a command
-# - make sure we have method for printing any specific list at any time in
-#       the process.
-# - error handler for Review Mode.
-# - ensure that "no items" entry is removed.
-# - error correction when typing name of a list  (one method is below but needs
-#       to cover both lowercase & upper; also injects at wrong time)
+# - addTo doesn't get values added to it from the timeframe evaluator
+# - need to store list items in an array
+# - make sure that we handle "Go Back" being issued as first command
+# - make sure we have method for printing any specific list at any time in the process.
+# - make sure lowercase works as well as uppercase for specifying list names.
+# - error correction when typing name of a list (otherwise it doesn't work right)
 # - create an error printer and request errors from the error printer
-# - save array/load arrays to a json file
-# - ensure array content isn't lost when overwriting
-# - review mode isn't connected up properly yet.
-# check for any mistakes to list name - need to adjust this
-# add an error handler for if the item has text at all.
-# add an improved error handler for if we don't recognize the item.
+# - create a db to store this info in (use bookstore as an example)
+# - add the modified date and created date automatically
 
-# NICE TO HAVE features
-# - web app component would be ideal.
-# - a visualization would be killer
 
-# ----- imports -------
-import time,datetime
-import numpy
-import sqlite3
-import pandas
-import json
-import string
+
+import string, datetime, sqlite3
+
+# set some vars
+addTo = "xxx"
+theItem = ""
+global theItem
+
+# build arrays
+weeklyTasks = ['no items']
+monthlyTasks = ['no items']
+quarterlyTasks = ['no items']
+# may need to remove these upon switch to sqlite3.
+
+
+
+
+
+
+
+
+# SQL CONNECTION =======================================================
+# ======================================================================
 
 
 # create a database first (using OOP)
 class Database:
-    # create blueprint of the object,
-    # then create instances
+    # create blueprint of the object
+    # then create object instances
 
-    def __init__(self,db): # this is a constructor;
-    # init is first call
+    def __init__(self,db):# this syntax is a constructor
+
+    # __init__ is how python creates an initial call when class is instanced.
         self.conn=sqlite3.connect(db)
-        self.cur=self.conn.cursor()
-        self.cur.execute("CREATE TABLE IF NOT EXISTS agility (id INTEGER PRIMARY KEY, taskname text, timeframe text)") #TODO: date added would be useful for filtering.
+        self.cur=self.conn.cursor() # TODO: HOW: how exactly does self.cur work?
+        self.cur.execute("CREATE TABLE IF NOT EXISTS agile (id INTEGER PRIMARY KEY, item text, notes text, createdtime text, modifiedtime text)")
         self.conn.commit()
 
-    def insert(self, taskname, timeframe):
-        self.cur.execute("INSERT INTO agility VALUES (NULL, ?,?)",(taskname,timeframe))
+    def insert(id, item, notes, createdtime, modifiedtime):
+        self.cur.execute("INSERT INTO agile VALUES (NULL,?,?,?,?)",(item,notes,createdtime,modifiedtime))
         self.conn.commit()
+        #TODO: how to add the modified date and created date automatically?
+    #
+    # TODO: This code is from bookstore. Commenting out until the following items
+    # are using correct values for the  agileplanner (not bookstore!)
 
-    def view(self,timeframe):
-        #TODO: add filter by timeframe
-        self.cur.execute("SELECT * from agility")
-        rows=self.cur.fetchall()
-        self.conn.commit()
-        return rows
-        #TODO: add delete, update, search
+    # def view(self):
+    #     self.cur.execute("SELECT * from booktable")
+    #     rows=self.cur.fetchall()
+    #     self.conn.commit()
+    #     return rows
+    #
+    # def search(self,title="",author="",year="",isbn=""):
+    #     self.cur.execute("SELECT * from booktable WHERE title=? OR author=? or year=? OR isbn=?",(title,author,year,isbn))
+    #     rows=self.cur.fetchall()
+    #     self.conn.commit()
+    #     return rows
+    #
+    # def delete(self,id):
+    #     self.cur.execute("DELETE FROM booktable WHERE id=?",(id,))
+    #     # rows=cur.fetchall()
+    #     self.conn.commit()
+    #
+    # def update(self,id, title, author, year, isbn):
+    #     self.cur.execute("UPDATE booktable SET title=?,author=?,year=?,isbn=? WHERE id=?",(title,author,year,isbn, id))
+    #     self.conn.commit()
+    #
+    #     # need a close method now.
+    # def __del__(self):
+    #     self.conn.close()
 
-    def __del__(self):
-        self.conn.close()
+print("Backend initialized.") # check in when loaded
+
+# ============================================================================
 
 
-    print("Back end initialized.") #check in when loaded
+# commenting out during switch to sqlite3 (from what was once a text file)
+# open the working file
+# file=open('agile.txt','a')
 
+
+
+
+
+
+
+
+# ============================================
+# ======= F U N C T I O N S ##################
+# ============================================
 
 def initializer():
     print("hello!")
     print("do you want to view the current list, or add a new item?")
 
 
-# set some vars
+def reviewMode():
+    print("welcome to Review Mode.")
+    # more to come
 
-weeklyTasks = []
-monthlyTasks = []
-quarterlyTasks = []
-
-addTo = "xxx"
-global theItem
-
-
-
-#  ---- functions -------
-def askInput():
-    initInput = input("What next? ")
-    getTimeframe(initInput)  # passes everything over for eval
-
-def getTimeframe(text):  # follows up with a request for timeframe
-# object) -> object: what does this do?
-  #  :rtype: object #what does this do?
-    if "add" in text:  # where does it look for text var? - unanswered question
+def getTimeframe(text): #follows up with a request for timeframe
+    if "add" in text: #where does it look for text var? - unanswered question
         timeframe = input("Where does this entry go? \n Weekly, Monthly or Quarterly?: ")
-        evaluateInput(timeframe)  # sends the timeframe to evaluateInput
-    if "review" in text:
-        reviewMode()
-
-def sleeper(sleeps):
-# def sleeper(sleeps: object) -> object:
-    # cuts out at 5 seconds
-    while (sleeps>0) and (sleeps<5):
-        time.sleep(sleeps)
-
-def askForItem():
-    input="What is the item?"
-    return input
+        evaluateInput(timeframe) # sends the timeframe to evaluateInput
 
 
-
-
-def printList():
-    """
-   :rtype: object
-    """
-    print("Here are your Lists:")
-    print("weekly list contains:")
-    print(weeklyTasks)
-    print("monthly list contains:")
-    print(monthlyTasks)
-    print("quarterly list contains:")
-    print(quarterlyTasks)
-
-
-
-
-
-
+# takes an item and checks its timeframe
 def evaluateInput(timeframe):
-    # takes an item and checks its timeframe
     global addTo
     global theItem
-    if timeframe == "Weekly" or timeframe == "weekly":
+    if timeframe == "Weekly":
         addTo = "weeklyTasks"
-        # next, ask for the item
-        # modularize the below steps
-        theItem = input('what is the item?')
-
-        weeklyTasks.insert(0, theItem)
-        #can't we clean up the below a little?
         printDestination()
-        print(weeklyTasks)
-        printDirections()
-        askInput()
+        weeklyTasks.insert(0,theItem)
 
-    if timeframe == "Monthly" or timeframe == "monthly":
-        addTo = "monthlyTasks"
-        theItem = input('what is the item?')
-        monthlyTasks.insert(0, theItem)
-        printDestination()
-        print(monthlyTasks)
-        printDirections()
-        askInput()
-
-    if timeframe == "Quarterly" or timeframe == "quarterly":
-        addTo = "quarterlyTasks"
-        theItem = input('what is the item?')
-        quarterlyTasks.insert(0, theItem)
-        printDestination()
-        print(quarterlyTasks)
-        printDirections()
-        askInput()
-
-    # check for mistakes to list name - need to adjust this
-    # this was originally under evaluateInput - might need to stay there for flow control
-
-
-# =========================================
-# ---------- error handler -------------- #
-# =========================================
-    if timeframe == "Monthly" or timeframe == "Weekly" or timeframe == "Quarterly":
-        print("End of review.")
-        askInput()
-    elif timeframe != "Monthly" or timeframe != "Weekly" or timeframe != "Quarterly":
-        print("Sorry, I didn't get that. Please try again.")
+    if timeframe == "Monthly":
+         addTo = "monthlyTasks"
+         monthlyTasks.insert(0,theItem)
+         printDestination()
+    if timeframe == "Quarterly":
+         addTo = "quarterlyTasks"
+         quarterlyTasks.insert(0,theItem)
+         printDestination()
+    if (timeframe != "Monthly") or (timeframe !="Weekly") or (timeframe !="Quarterly"):
+        print ("Sorry, I didn't get that. Please try again.")
 
 
 
 
+    # next, ask for the item
+    theItem = input('what is the item?')
+
+    # how to call a list by a variable name?
+    # so far, tried
+    # addTo.insert(0, theItem)
+    # weeklytasks.append(theItem)
+    # print(addTo)
+    # def askForItem(theItem):
+    #     addTo.push(theItem)
+    #     print(addTo)
+    #
 
 
-
-# --------------- printers -------------------
 def printDirections():
-    print("Type 'go back' to go back to main menu. "
-          "\n Type 'review' to enter Review mode. "
-          "\n Type 'add' to add a new item.")
+    print("Type 'go back' to go back to main menu. \n Type 'review' to enter Review mode. \n Type 'add' to add a new item.")
 
 
 def printDestination():
-    print("The item (" + theItem + ") will be added to " + addTo)
-    print("the " + addTo + " list now contains:")  # good, this worked
-# ---------------------------------------------
+    print("The item (" + theItem+") will be added to " + addTo)
+    # prints where something is going
+    print("the "+addTo+" list now contains:") # good, this worked
+    print(weeklyTasks) #good, this worked (but the method to push doesn't work)
+    # end print destination
 
 
-
-
-
-
-
-
-
-
-
-
-
-# ======== modes ===========
-def reviewMode():
-    print("welcome to Review Mode.")
-    printList()
-    reviewSelect = input("pick a List: weekly, monthly, or quarterly.")
-    getReviewMode(reviewSelect)
-
-def getReviewMode(reviewSelect):
-# I do not know what request: object) -> object: does
-    if "weekly" in reviewSelect or "Weekly" in reviewSelect:
-        print("weekly list contains:")
-        for item in weeklyTasks:
-            print(item)
-    if "monthly" in reviewSelect or "Monthly" in reviewSelect:
-        print("monthly list contains:")
-        for item in monthlyTasks:
-            print(item)
-    if "quarterly" in reviewSelect or "Quarterly" in reviewSelect:
-        print("quarterly list contains:")
-        for item in quarterlyTasks:
-            print(item)
-
-        # need error handler for typos
-
-
+# Review phase needs to be set up
 
 
 # ===============
@@ -236,4 +185,6 @@ def getReviewMode(reviewSelect):
 
 initializer()
 printDirections()
-askInput()
+initInput = input("What next? ")
+getTimeframe(initInput) # passes everything over for eval
+printDestination()
